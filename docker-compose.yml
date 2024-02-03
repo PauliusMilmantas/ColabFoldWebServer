@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile-API
+    ports:
+      - "3000:3000"
+    environment:
+      - DEFAULT_TOKEN_LIMIT=20
+      - USER_TOKENS=["userToken"]
+      - ADMIN_TOKEN="adminToken"
+    networks:
+      - shared_net
+  rabbit:
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    driver: bridge
