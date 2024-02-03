@@ -13,6 +13,14 @@ services:
       - ADMIN_TOKEN="adminToken"
     networks:
       - shared_net
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile-Worker
+    ports:
+      - "3001:3001"
+    networks:
+      - shared_net
   rabbit:
     image: rabbitmq:3.12-management
     ports:

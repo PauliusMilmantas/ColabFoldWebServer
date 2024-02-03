@@ -2,3 +2,6 @@
 
 API/node_modules/
 API/dist/
+
+Worker/node_modules/
+Worker/dist/
