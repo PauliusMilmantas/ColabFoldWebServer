@@ -11,16 +11,21 @@ services:
       - DEFAULT_TOKEN_LIMIT=20
       - USER_TOKENS=["userToken"]
       - ADMIN_TOKEN="adminToken"
-    networks:
-      - shared_net
+      - RABBIT_USERNAME=admin
+      - RABBIT_PASSWORD=admin
+      - RABBIT_URL=rabbit
+    depends_on:
+      - rabbit
   worker:
     build:
       context: .
       dockerfile: Dockerfile-Worker
-    ports:
-      - "3001:3001"
-    networks:
-      - shared_net
+    environment:
+      - RABBIT_USERNAME=admin
+      - RABBIT_PASSWORD=admin
+      - RABBIT_URL=rabbit
+    depends_on:
+      - api
   rabbit:
     image: rabbitmq:3.12-management
     ports:
@@ -32,9 +37,3 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
-    networks:
-      - shared_net
-
-networks:
-  shared_net:
-    driver: bridge
