@@ -15,14 +15,16 @@ export class RabbitMqController {
 
     @EventPattern('task-MMseq2')
     async handleMMseq2(@Ctx() context: RmqContext) {
-        const content = this.retrieveMessage(context);
+        const content: MessageContent = this.retrieveMessage(context);
         console.log('Received MMseq2 ticket with id: ', content.ticket);
     }
 
     @EventPattern('task-SWIPE')
     async handleSWIPE(@Ctx() context: RmqContext) {
-        const content = this.retrieveMessage(context);
+        const content: MessageContent = this.retrieveMessage(context);
         console.log('Received SWIPE ticket with id: ', content.ticket);
+
+        const results = this.swipe.query(content.data);
     }
 
     private retrieveMessage(context: RmqContext): MessageContent {
