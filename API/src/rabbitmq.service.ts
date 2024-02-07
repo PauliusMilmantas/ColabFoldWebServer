@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import * as amqp from 'amqplib';
-import { randomUUID } from "crypto";
 import { AppConfig } from "./config/app.config";
+import { TicketService } from "./ticket.service";
+
+export type EngineType = 'MMseq2' | 'SWIPE';
 
 @Injectable()
 export class RabbitMqService {
@@ -13,7 +15,7 @@ export class RabbitMqService {
     private taskQueueName = 'task_queue';
     private resultsQueueName = 'results_queue';
 
-    constructor(private config: AppConfig) {}
+    constructor(private config: AppConfig, private ticketService: TicketService) {}
 
     async connect(): Promise<void> {
         this.connection = await amqp.connect(
@@ -27,8 +29,8 @@ export class RabbitMqService {
         await this.resultsChannel.assertQueue(this.resultsQueueName, { durable: true });
     }
 
-    async sendMessage(message: string): Promise<string> {
-        const ticket = randomUUID();
+    async sendMessage(message: string, engine: EngineType): Promise<string> {
+        const ticket = this.ticketService.generateTicket();
         if(!this.taskChannel) {
             await this.connect();
         }
@@ -36,7 +38,7 @@ export class RabbitMqService {
         await this.taskChannel.sendToQueue(
             this.taskQueueName, 
             Buffer.from(JSON.stringify({
-                pattern: 'task',
+                pattern: `task-${engine}`,
                 ticket: ticket,
                 data: message
             })), 
