@@ -24,8 +24,11 @@ services:
       - RABBIT_USERNAME=admin
       - RABBIT_PASSWORD=admin
       - RABBIT_URL=rabbit
+    volumes:
+      - engines:/app
     depends_on:
-      - api
+      - rabbit
+      - engine_swipe
   rabbit:
     image: rabbitmq:3.12-management
     ports:
@@ -37,3 +40,12 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
+  engine_swipe:
+    build:
+      context: .
+      dockerfile: Engines/SWIPE/Dockerfile
+    volumes:
+      - engines:/engines/swipe
+
+volumes:
+  engines:
