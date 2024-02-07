@@ -28,6 +28,6 @@ export class TicketService {
     }
 
     getTicketStatus(ticket: string): TicketStatus {
-        return this.tickets.find(t => t.ticket === ticket).status;
+        return this.tickets.find(t => t.ticket === ticket)?.status;
     }
 }

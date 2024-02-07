@@ -2,7 +2,7 @@ import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { BearerGuard } from './bearer.guard';
 import { EngineType, RabbitMqService } from './rabbitmq.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { TicketService } from './ticket.service';
+import { TicketService, TicketStatus } from './ticket.service';
 
 @Controller()
 @ApiBearerAuth()
@@ -19,7 +19,7 @@ export class AppController {
   }
 
   @Get('ticket')
-  ticket(@Query('ticket') ticket: string) {
-    this.ticketService.getTicketStatus(ticket);
+  ticket(@Query('ticket') ticket: string): TicketStatus {
+    return this.ticketService.getTicketStatus(ticket);
   }
 }
