@@ -1,5 +1,6 @@
 import { Controller } from "@nestjs/common";
 import { Ctx, EventPattern, RmqContext } from "@nestjs/microservices";
+import { SwipeService } from "./services/swipe.service";
 
 type MessageContent = {
     pattern: string;
@@ -9,6 +10,9 @@ type MessageContent = {
 
 @Controller()
 export class RabbitMqController {
+
+    constructor(private swipe: SwipeService) {}
+
     @EventPattern('task-MMseq2')
     async handleMMseq2(@Ctx() context: RmqContext) {
         const content = this.retrieveMessage(context);
