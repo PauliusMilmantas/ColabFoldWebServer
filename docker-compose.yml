@@ -25,7 +25,8 @@ services:
       - RABBIT_PASSWORD=admin
       - RABBIT_URL=rabbit
     volumes:
-      - engines:/app
+      - swipe:/app/engines
+      - databases:/app/databases
     depends_on:
       - rabbit
       - engine_swipe
@@ -44,8 +45,17 @@ services:
     build:
       context: .
       dockerfile: Engines/SWIPE/Dockerfile
+    depends_on:
+      - databases
     volumes:
-      - engines:/engines/swipe
+      - swipe:/app
+  databases:
+    build:
+      context: .
+      dockerfile: Dockerfile-DB
+    volumes:
+      - databases:/app
 
 volumes:
   engines:
+  swipe:

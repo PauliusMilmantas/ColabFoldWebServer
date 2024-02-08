@@ -1,0 +1,12 @@
+FROM alpine:latest
+
+RUN apk add gzip curl
+
+WORKDIR /app
+
+RUN curl -L https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz -o uniprot_sprot.fasta.gz && gunzip uniprot_sprot.fasta.gz
+# RUN curl -L https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref100/uniref100.fasta.gz -o uniref100.fasta.gz && gunzip uniref100.fasta.gz
+# RUN curl -L https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref90/uniref90.fasta.gz -o uniref90.fasta.gz && gunzip uniref90.fasta.gz
+# RUN curl -L https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/uniref50.fasta.gz -o uniref50.fasta.gz && gunzip uniref50.fasta.gz
+
+CMD ["echo", "Databases are ready"]

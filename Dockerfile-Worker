@@ -1,6 +1,6 @@
-FROM node:21.6.1
+FROM --platform=linux/x86_64 node:21.6.1
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY Worker/package*.json ./
 
