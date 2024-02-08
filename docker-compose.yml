@@ -25,7 +25,7 @@ services:
       - RABBIT_PASSWORD=admin
       - RABBIT_URL=rabbit
     volumes:
-      - swipe:/app/engines
+      - swipe:/app/engines/swipe
       - databases:/app/databases
     depends_on:
       - rabbit
@@ -59,3 +59,4 @@ services:
 volumes:
   engines:
   swipe:
+  databases:
