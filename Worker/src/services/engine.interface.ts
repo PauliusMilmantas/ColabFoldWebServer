@@ -1,3 +1,3 @@
 export interface Engine {
-    query: (sequence: string) => any;
+    query: (sequence: string) => Promise<string>;
 }

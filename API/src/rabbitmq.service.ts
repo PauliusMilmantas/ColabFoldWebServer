@@ -10,10 +10,7 @@ export class RabbitMqService {
     private connection: amqp.Connection;
 
     private taskChannel: amqp.Channel = null;
-    private resultsChannel: amqp.Channel;
-
     private taskQueueName = 'task_queue';
-    private resultsQueueName = 'results_queue';
 
     constructor(private config: AppConfig, private ticketService: TicketService) {}
 
@@ -24,9 +21,6 @@ export class RabbitMqService {
 
         this.taskChannel = await this.connection.createChannel();
         await this.taskChannel.assertQueue(this.taskQueueName, { durable: true });
-
-        this.resultsChannel = await this.connection.createChannel();
-        await this.resultsChannel.assertQueue(this.resultsQueueName, { durable: true });
     }
 
     async sendMessage(message: string, engine: EngineType): Promise<string> {

@@ -26,7 +26,6 @@ services:
       - RABBIT_URL=rabbit
     volumes:
       - swipe:/app/engines/swipe
-      - databases:/app/databases
     depends_on:
       - rabbit
       - engine_swipe
@@ -45,18 +44,9 @@ services:
     build:
       context: .
       dockerfile: Engines/SWIPE/Dockerfile
-    depends_on:
-      - databases
     volumes:
       - swipe:/app
-  databases:
-    build:
-      context: .
-      dockerfile: Dockerfile-DB
-    volumes:
-      - databases:/app
 
 volumes:
   engines:
   swipe:
-  databases:

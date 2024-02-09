@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
 
 export type Ticket = {
-    ticket: string;
     status: TicketStatus;
+    results?: string;
 };
 
 export enum TicketStatus {
@@ -13,21 +13,37 @@ export enum TicketStatus {
 
 @Injectable()
 export class TicketService {
-
-    private tickets: Ticket[] = [];
+    private tickets: Map<string, Ticket> = new Map<string, Ticket>();
 
     generateTicket(): string {
         const ticket = randomUUID();
 
-        this.tickets.push({
-            ticket: ticket,
-            status: TicketStatus.Pending
-        })
+        this.tickets.set(
+            ticket,
+            {
+                status: TicketStatus.Pending
+            }
+        );
 
         return ticket;
     }
 
     getTicketStatus(ticket: string): TicketStatus {
-        return this.tickets.find(t => t.ticket === ticket)?.status;
+        return this.tickets.get(ticket).status;
+    }
+
+    getTicketResults(ticket: string) {
+        const data: Ticket = this.tickets.get(ticket);
+        return data.results ? data.results : data.status;
+    }
+
+    closeTicket(ticket: string, data: string) {
+        this.tickets.set(
+            ticket,
+            {
+                status: TicketStatus.Done,
+                results: data
+            }
+        );
     }
 }
