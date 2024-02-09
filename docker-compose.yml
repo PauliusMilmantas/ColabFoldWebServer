@@ -8,8 +8,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DEFAULT_TOKEN_LIMIT=20
-      - USER_TOKENS=["userToken"]
+      - DEFAULT_TOKEN_LIMIT=5000
+      - USER_TOKENS=["dev"]
       - ADMIN_TOKEN="adminToken"
       - RABBIT_USERNAME=admin
       - RABBIT_PASSWORD=admin
