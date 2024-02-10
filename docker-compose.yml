@@ -26,6 +26,7 @@ services:
       - RABBIT_URL=rabbit
     volumes:
       - swipe:/app/engines/swipe
+      - databases:/app/databases
     depends_on:
       - rabbit
       - engine_swipe
@@ -50,3 +51,9 @@ services:
 volumes:
   engines:
   swipe:
+  databases:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /Users/pauliusmilmantas/Desktop/Baigiamasis/Databases

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { BearerGuard } from './bearer.guard';
 import { EngineType, RabbitMqService } from './rabbitmq.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -33,7 +33,7 @@ export class AppController {
   }
 
   @Post('logResults')
-  logResults(@Query('ticket') ticket: string, @Query('data') data: string) {
+  logResults(@Query('ticket') ticket: string, @Body('data') data: string) {
     console.log('Closing ticket ', ticket);
     this.ticketService.closeTicket(ticket, data);
   }

@@ -1,5 +1,6 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class ResultsLoggerService {
@@ -7,15 +8,22 @@ export class ResultsLoggerService {
 
     async closeTicket(ticket: string, data: string) {
         const params = {
-            ticket: ticket,
-            data: data
+            ticket: ticket
         };
         
-        this.httpService.post(
-            'http://api:3000/logResults',
-            { },
-            { params }
-        ).subscribe(_ => {
+        await firstValueFrom(
+            this.httpService.post(
+                'http://api:3000/logResults',
+                { 
+                    data: data
+                },
+                { params, timeout: 5000 }
+            )
+        )
+        .catch((err) => {
+            console.log(`Error sending back results: ${err}`);
+        })
+        .then(() => {
             console.log(`Message was sent successfully (ticket: ${ticket})`);
         });
     }
