@@ -2,6 +2,7 @@ import { Controller } from "@nestjs/common";
 import { Ctx, EventPattern, RmqContext } from "@nestjs/microservices";
 import { SwipeService } from "./services/swipe.service";
 import { ResultsLoggerService } from "./resultsLogger.service";
+import { SwipeConverter } from "./converters/swipe-converter.service";
 
 type MessageContent = {
     pattern: string;
@@ -14,7 +15,8 @@ export class RabbitMqController {
 
     constructor(
         private logger: ResultsLoggerService,
-        private swipe: SwipeService
+        private swipe: SwipeService,
+        private swipeConverter: SwipeConverter
     ) {}
 
     @EventPattern('task-MMseq2')
@@ -28,7 +30,13 @@ export class RabbitMqController {
         const content: MessageContent = this.retrieveMessage(context);
         console.log('Received SWIPE ticket with id: ', content.ticket);
 
-        const results = await this.swipe.query(content.data);
+        // Executing SWIPE program
+        let results = await this.swipe.query(content.data);
+        
+        // Trasforming the results, because SWIPE returns wrong format
+        results = this.swipeConverter.convert(results);
+
+        // Sending results back to the main API
         console.log('Sending results back for ticket: ', content.ticket);
         await this.logger.closeTicket(content.ticket, results);
     }
