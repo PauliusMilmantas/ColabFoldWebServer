@@ -34,8 +34,10 @@ export class SwipeConverter {
             }
         });
 
-        // Remove last 2 lines
-        answer = answer.split('\n').slice(0, -2).join('\n');
+        // Remove last 2 lines && add initial first line
+        const g: string[] = answer.split('\n');
+        g.unshift('#43');
+        answer = g.slice(0, -2).join('\n');
 
         return answer;
     }
