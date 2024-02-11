@@ -7,12 +7,22 @@ export class SwipeConverter {
         let lines: string[] = data.split('\n');
         let maxSeqLength: number = 0;
 
-        lines.forEach(line => {
-            if(line.startsWith('>')) answer += `${line.split(' ')[0]}\n`;
-            if(line.startsWith('          ') && line[10] != ' ' && !line.startsWith('          Length')) {
-                const l = `${line}\n`.trimStart().replaceAll(' ', '-').replaceAll('+', '');
-                answer += l;
-                if(maxSeqLength < l.length) maxSeqLength = l.length;
+        // Flags
+        let query_began = false;
+
+        // Filter lines
+        lines.forEach(line => {        
+            // Sequence identifier
+            if(/^>/.test(line)) {
+                answer += `${line.split(' ')[0]}\n`;
+            } else {
+                if(/^Query:/.test(line)) query_began = true;
+                else if(/^Sbjct:/.test(line)) query_began = false;
+                else if(query_began == true && /^          [A-Z -+]{4}/.test(line)) {
+                    const l = `${line}\n`.trimStart().replaceAll(' ', '-').replaceAll('+', '');
+                    answer += l;
+                    if(maxSeqLength < l.length) maxSeqLength = l.length;
+                }
             }
         });
 
@@ -20,17 +30,14 @@ export class SwipeConverter {
         lines = answer.split('\n');
         answer = '';
         lines.forEach(line => {
-            if(!line.startsWith('-') && !line.startsWith(' ')) {
-                if(line.startsWith('>')) {
-                    answer += `${line}\n`;
-                } else {
-                    let neededPading = maxSeqLength - line.length;
-    
+            if(line.startsWith('>')) {
+                answer += `${line}\n`;
+            } else {
+                let neededPading = maxSeqLength - line.length;
                     for(let i = 0; i < neededPading; i++) {
-                        line += '-';
-                    }
-                    answer += `${line}\n`;
+                    line += '-';
                 }
+                answer += `${line}\n`;
             }
         });
 

@@ -8,7 +8,7 @@ export class SwipeService implements Engine {
 
     async query(sequence: string): Promise<string> {
         await this.exec(`echo "${sequence}" >> seq.txt`);
-        const { stdout, err } = await this.exec('/app/engines/swipe/swipe/swipe -i /app/seq.txt -d /app/databases/uniref50/uniref50');
+        const { stdout, err } = await this.exec('/app/engines/swipe/swipe/swipe -i /app/seq.txt -b 500 -d /app/databases/uniref50/uniref50');
         if(err) console.log(`Error executing SWIPE: ${err}`);
         await this.exec('rm /app/seq.txt');
         return stdout;
