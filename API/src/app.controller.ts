@@ -3,6 +3,7 @@ import { BearerGuard } from './bearer.guard';
 import { EngineType, RabbitMqService } from './rabbitmq.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { TicketService, TicketStatus } from './ticket.service';
+import { query } from 'express';
 
 @Controller()
 export class AppController {
@@ -15,7 +16,11 @@ export class AppController {
   @ApiBearerAuth()
   @Post('submit')
   submit(@Query('sequences') sequencesData: string, @Query('engine') engine: EngineType): Promise<string> {
-    return this.rabbitMqService.sendMessage(sequencesData, engine);
+    return  this.rabbitMqService.sendMessage(
+      this.ticketService.getTicketQuery(sequencesData) ?? this.ticketService.generateTicket(sequencesData),
+      sequencesData, 
+      engine
+    );
   }
 
   @UseGuards(BearerGuard)

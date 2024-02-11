@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import * as amqp from 'amqplib';
 import { AppConfig } from "./config/app.config";
-import { TicketService } from "./ticket.service";
 
 export type EngineType = 'MMseq2' | 'SWIPE';
 
@@ -12,7 +11,7 @@ export class RabbitMqService {
     private taskChannel: amqp.Channel = null;
     private taskQueueName = 'task_queue';
 
-    constructor(private config: AppConfig, private ticketService: TicketService) {}
+    constructor(private config: AppConfig) {}
 
     async connect(): Promise<void> {
         this.connection = await amqp.connect(
@@ -23,8 +22,7 @@ export class RabbitMqService {
         await this.taskChannel.assertQueue(this.taskQueueName, { durable: true });
     }
 
-    async sendMessage(message: string, engine: EngineType): Promise<string> {
-        const ticket = this.ticketService.generateTicket();
+    async sendMessage(ticket: string, message: string, engine: EngineType): Promise<string> {
         if(!this.taskChannel) {
             await this.connect();
         }

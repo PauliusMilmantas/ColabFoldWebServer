@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 
 export type Ticket = {
     status: TicketStatus;
+    query: string;
     results?: string;
 };
 
@@ -15,13 +16,14 @@ export enum TicketStatus {
 export class TicketService {
     private tickets: Map<string, Ticket> = new Map<string, Ticket>();
 
-    generateTicket(): string {
+    generateTicket(query: string): string {
         const ticket = randomUUID();
 
         this.tickets.set(
             ticket,
             {
-                status: TicketStatus.Pending
+                status: TicketStatus.Pending,
+                query: query
             }
         );
 
@@ -37,12 +39,25 @@ export class TicketService {
         return data.results ? data.results : data.status;
     }
 
+    getTicketQuery(ticket: string) {
+        return this.tickets.get(ticket).query;
+    }
+
+    getTicketWithQuery(query: string): string | null {
+        this.tickets.forEach((value: Ticket, key: string, map: Map<string, Ticket>) => {
+            if(value.query === query) return key;
+        });
+
+        return null;
+    }
+
     closeTicket(ticket: string, data: string) {
         this.tickets.set(
             ticket,
             {
                 status: TicketStatus.Done,
-                results: data
+                results: data,
+                query: this.getTicketQuery(ticket)
             }
         );
     }
