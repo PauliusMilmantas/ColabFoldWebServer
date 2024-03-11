@@ -3,7 +3,6 @@ import { BearerGuard } from './bearer.guard';
 import { EngineType, RabbitMqService } from './rabbitmq.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { TicketService, TicketStatus } from './ticket.service';
-import { query } from 'express';
 
 @Controller()
 export class AppController {

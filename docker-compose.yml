@@ -26,10 +26,12 @@ services:
       - RABBIT_URL=rabbit
     volumes:
       - swipe:/app/engines/swipe
+      - diamond:/app/engines/diamond
       - databases:/app/databases
     depends_on:
       - rabbit
       - engine_swipe
+      - engine_diamond
   rabbit:
     image: rabbitmq:3.12-management
     ports:
@@ -47,10 +49,17 @@ services:
       dockerfile: Engines/SWIPE/Dockerfile
     volumes:
       - swipe:/app
+  engine_diamond:
+    build:
+      context:  .
+      dockerfile: Engines/DIAMOND/Dockerfile
+    volumes:
+      - diamond:/app
 
 volumes:
   engines:
   swipe:
+  diamond:
   databases:
     driver: local
     driver_opts:

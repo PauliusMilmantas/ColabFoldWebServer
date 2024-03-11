@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
+import { query } from "express";
 
 export type Ticket = {
     status: TicketStatus;
@@ -40,7 +41,7 @@ export class TicketService {
     }
 
     getTicketQuery(ticket: string) {
-        return this.tickets.get(ticket).query;
+        return this.tickets.get(ticket)?.query ?? undefined;
     }
 
     getTicketWithQuery(query: string): string | null {
