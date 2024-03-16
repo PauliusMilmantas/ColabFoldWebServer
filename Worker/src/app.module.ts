@@ -3,7 +3,7 @@ import { RabbitMqController } from './rabbitmq.controller';
 import { SwipeService } from './services/swipe.service';
 import { ResultsLoggerService } from './resultsLogger.service';
 import { HttpModule } from '@nestjs/axios';
-import { SwipeConverter } from './converters/swipe-converter.service';
+import { BlastConverter } from './converters/blast-converter.service';
 import { DiamondService } from './services/diamond.service';
 
 @Module({
@@ -12,7 +12,7 @@ import { DiamondService } from './services/diamond.service';
     SwipeService,
     DiamondService,
     ResultsLoggerService,
-    SwipeConverter
+    BlastConverter
   ],
   imports: [HttpModule]
 })

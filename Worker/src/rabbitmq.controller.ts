@@ -2,7 +2,7 @@ import { Controller } from "@nestjs/common";
 import { Ctx, EventPattern, RmqContext } from "@nestjs/microservices";
 import { SwipeService } from "./services/swipe.service";
 import { ResultsLoggerService } from "./resultsLogger.service";
-import { SwipeConverter } from "./converters/swipe-converter.service";
+import { BlastConverter } from "./converters/blast-converter.service";
 import { DiamondService } from "./services/diamond.service";
 
 type MessageContent = {
@@ -18,7 +18,7 @@ export class RabbitMqController {
         private logger: ResultsLoggerService,
         private swipe: SwipeService,
         private diamond: DiamondService,
-        private swipeConverter: SwipeConverter
+        private swipeConverter: BlastConverter
     ) {}
 
     @EventPattern('task-DIAMOND')
@@ -29,7 +29,7 @@ export class RabbitMqController {
         // Executing DIAMOND program
         let results = await this.diamond.query(content.data);
 
-        // SWIPE exports same BLAST pairwise format
+        // Trasforming the results, because DIAMOND returns wrong format (BLAST pairwise format)
         results = this.swipeConverter.convert(results);
 
         // Sending results back to the main API

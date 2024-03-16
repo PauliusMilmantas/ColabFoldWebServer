@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class SwipeConverter {
+export class BlastConverter {
     convert(data: string): string {
         let answer: string = '';
         let lines: string[] = data.split('\n');
@@ -16,9 +16,9 @@ export class SwipeConverter {
             if(/^>/.test(line)) {
                 answer += `${line.split(' ')[0]}\n`;
             } else {
-                if(/^Query:/.test(line)) query_began = true;
+                if(/^Query:/.test(line) || /^Query   /.test(line)) query_began = true;
                 else if(/^Sbjct:/.test(line)) query_began = false;
-                else if(query_began == true && /^          [A-Z -+]{4}/.test(line)) {
+                else if(query_began == true && (/^          [A-Z -+]{4}/.test(line) || /^           [A-Z -+]{4}/.test(line))) {
                     const l = `${line}\n`.trimStart().replaceAll(' ', '-').replaceAll('+', '');
                     answer += l;
                     if(maxSeqLength < l.length) maxSeqLength = l.length;
@@ -43,7 +43,7 @@ export class SwipeConverter {
 
         // Remove last 2 lines && add initial first line
         const g: string[] = answer.split('\n');
-        g.unshift('#43');
+        g.unshift('#' + g[1].length + '\t1');
         answer = g.slice(0, -2).join('\n');
 
         return answer;
