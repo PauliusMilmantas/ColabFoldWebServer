@@ -6,9 +6,9 @@ export class SwipeService implements Engine {
     private util = require('util');
     private exec = this.util.promisify(require('child_process').exec)
 
-    async query(sequence: string): Promise<string> {
+    async query(sequence: string, dbType: string): Promise<string> {
         await this.exec(`echo "${sequence}" >> seq.txt`);
-        const { stdout, err } = await this.exec('/app/engines/swipe/swipe/swipe -i /app/seq.txt -b 500 -d /app/databases/uniref50/uniref50', { maxBuffer: 1024 * 1024 * 1024 });
+        const { stdout, err } = await this.exec('/app/engines/swipe/swipe/swipe -i /app/seq.txt -b 500 -d /app/databases/' + dbType + '/' + dbType, { maxBuffer: 1024 * 1024 * 1024 });
         if(err) console.log(`Error executing SWIPE: ${err}`);
         await this.exec('rm /app/seq.txt');
         return stdout;

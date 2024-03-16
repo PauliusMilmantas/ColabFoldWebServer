@@ -9,6 +9,7 @@ type MessageContent = {
     pattern: string;
     ticket: string;
     data: string;
+    dbType: string;
 };
 
 @Controller()
@@ -27,7 +28,7 @@ export class RabbitMqController {
         console.log('Received DIAMOND ticket with id: ', content.ticket);
 
         // Executing DIAMOND program
-        let results = await this.diamond.query(content.data);
+        let results = await this.diamond.query(content.data, content.dbType);
 
         // Trasforming the results, because DIAMOND returns wrong format (BLAST pairwise format)
         results = this.swipeConverter.convert(results);
@@ -43,7 +44,7 @@ export class RabbitMqController {
         console.log('Received SWIPE ticket with id: ', content.ticket);
 
         // Executing SWIPE program
-        let results = await this.swipe.query(content.data);
+        let results = await this.swipe.query(content.data, content.dbType);
         
         // Trasforming the results, because SWIPE returns wrong format (BLAST pairwise format)
         results = this.swipeConverter.convert(results);

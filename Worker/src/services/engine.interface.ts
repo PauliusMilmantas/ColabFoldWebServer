@@ -1,3 +1,3 @@
 export interface Engine {
-    query: (sequence: string) => Promise<string>;
+    query: (sequence: string, dbType: string) => Promise<string>;
 }

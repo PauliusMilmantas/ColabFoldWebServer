@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import * as amqp from 'amqplib';
 import { AppConfig } from "./config/app.config";
 
@@ -9,7 +9,8 @@ export class RabbitMqService {
     private connection: amqp.Connection;
 
     private taskChannel: amqp.Channel = null;
-    private taskQueueName = 'task_queue';
+    private taskQueueName: string = 'task_queue';
+    private databaseTypes: string[] = ['uniref50', 'uniref90', 'uniref100'];
 
     constructor(private config: AppConfig) {}
 
@@ -22,7 +23,9 @@ export class RabbitMqService {
         await this.taskChannel.assertQueue(this.taskQueueName, { durable: true });
     }
 
-    async sendMessage(ticket: string, message: string, engine: EngineType): Promise<string> {
+    async sendMessage(ticket: string, message: string, engine: EngineType, dbType: string): Promise<string> {
+        if(!this.databaseTypes.includes(dbType)) throw new BadRequestException('Database not found. (Ex. uniref50, uniref90, uniref100)');
+        
         if(!this.taskChannel) {
             await this.connect();
         }
@@ -32,7 +35,8 @@ export class RabbitMqService {
             Buffer.from(JSON.stringify({
                 pattern: `task-${engine}`,
                 ticket: ticket,
-                data: message
+                data: message,
+                dbType: dbType
             })), 
             { persistant: true }
         );
