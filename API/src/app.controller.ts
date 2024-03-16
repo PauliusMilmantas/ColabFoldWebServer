@@ -14,9 +14,9 @@ export class AppController {
   @UseGuards(BearerGuard)
   @ApiBearerAuth()
   @Post('submit')
-  submit(@Query('sequences') sequencesData: string, @Query('engine') engine: EngineType, @Query('databaseType') dbType: string): Promise<string> {
-    return  this.rabbitMqService.sendMessage(
-      this.ticketService.getTicketQuery(sequencesData) ?? this.ticketService.generateTicket(sequencesData),
+  submit(@Query('sequences') sequencesData: string, @Query('engine') engine: EngineType, @Query('databaseType') dbType: string): string | Promise<string> {
+    return this.ticketService.getTicketQuery(sequencesData) ?? this.rabbitMqService.sendMessage(
+      this.ticketService.generateTicket(sequencesData),
       sequencesData, 
       engine,
       dbType
