@@ -1,1 +1,1 @@
-![architecture](https://github.com/PauliusMilmantas/ColabFoldWebServer/assets/1357358/d64e423a-78c2-4c56-baf4-7186daed227d)
+![architecture](https://github.com/PauliusMilmantas/ColabFoldWebServer/assets/1357358/07e9c160-d56d-4011-83e5-9a26f825638f)
