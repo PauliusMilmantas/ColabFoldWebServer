@@ -5,6 +5,7 @@ import { ResultsLoggerService } from './resultsLogger.service';
 import { HttpModule } from '@nestjs/axios';
 import { BlastConverter } from './converters/blast-converter.service';
 import { DiamondService } from './services/diamond.service';
+import { DownloadService } from './services/download.service';
 
 @Module({
   controllers: [RabbitMqController],
@@ -12,7 +13,8 @@ import { DiamondService } from './services/diamond.service';
     SwipeService,
     DiamondService,
     ResultsLoggerService,
-    BlastConverter
+    BlastConverter,
+    DownloadService
   ],
   imports: [HttpModule]
 })

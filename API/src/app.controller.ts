@@ -25,6 +25,16 @@ export class AppController {
 
   @UseGuards(BearerGuard)
   @ApiBearerAuth()
+  @Post('databaseURL')
+  downloadDB(@Query('databaseURL') databaseURL: string): string | Promise<string> {
+    return this.ticketService.getTicketQuery(databaseURL) ?? this.rabbitMqService.downloadDatabaseMessage(
+      this.ticketService.generateTicket(databaseURL),
+      databaseURL
+    );
+  }
+
+  @UseGuards(BearerGuard)
+  @ApiBearerAuth()
   @Get('status')
   status(@Query('ticket') ticket: string): TicketStatus {
     return this.ticketService.getTicketStatus(ticket);

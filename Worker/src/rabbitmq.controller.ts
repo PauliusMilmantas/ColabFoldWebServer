@@ -4,6 +4,7 @@ import { SwipeService } from "./services/swipe.service";
 import { ResultsLoggerService } from "./resultsLogger.service";
 import { BlastConverter } from "./converters/blast-converter.service";
 import { DiamondService } from "./services/diamond.service";
+import { DownloadService } from "./services/download.service";
 
 type MessageContent = {
     pattern: string;
@@ -19,7 +20,8 @@ export class RabbitMqController {
         private logger: ResultsLoggerService,
         private swipe: SwipeService,
         private diamond: DiamondService,
-        private swipeConverter: BlastConverter
+        private swipeConverter: BlastConverter,
+        private downloadService: DownloadService
     ) {}
 
     @EventPattern('task-DIAMOND')
@@ -48,6 +50,18 @@ export class RabbitMqController {
         
         // Trasforming the results, because SWIPE returns wrong format (BLAST pairwise format)
         results = this.swipeConverter.convert(results);
+
+        // Sending results back to the main API
+        console.log('Sending results back for ticket: ', content.ticket);
+        await this.logger.closeTicket(content.ticket, results);
+    }
+
+    @EventPattern('download')
+    async downloadDatabase(@Ctx() context: RmqContext) {
+        const content: MessageContent = this.retrieveMessage(context);
+        console.log('Received DOWNLOAD DATABASE ticket with id: ', content.ticket);
+
+        const results = await this.downloadService.downloadDatabase(content.data);
 
         // Sending results back to the main API
         console.log('Sending results back for ticket: ', content.ticket);

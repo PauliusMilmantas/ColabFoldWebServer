@@ -40,6 +40,25 @@ export class RabbitMqService {
             })), 
             { persistant: true }
         );
+        
+        return ticket;
+    }
+
+    async downloadDatabaseMessage(ticket: string, url: string): Promise<string> {
+        if(!this.taskChannel) {
+            await this.connect();
+        }
+
+        await this.taskChannel.sendToQueue(
+            this.taskQueueName, 
+            Buffer.from(JSON.stringify({
+                pattern: `download`,
+                ticket: ticket,
+                data: url
+            })), 
+            { persistant: true }
+        );
+
         return ticket;
     }
 
